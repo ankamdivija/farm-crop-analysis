@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Crop Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .navbar a {
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar a.logo {
+
+            display: block;
+            color: #f2f2f2;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 30px;
+            padding: 14px 16px;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .columns {
+            margin-top: 20px;
+        }
+
+        .column {
+            margin-right: 4rem;
+        }
+
+        .is-hidden {
+            display: none;
+        }
+
+        .is-active {
+            display: block !important;
+        }
+
+        .image-card {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        .info-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .info-heading {
+            flex: 1;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .info-value {
+            flex: 2;
+        }
+        .field {
+            font-size: large;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="/home" class="logo">Farm Crop Analysis</a>
+        <div class="nav-links">
+            <a href="/home" class="tablinks">Home</a>
+            <a href="/predict" class="tablinks">Predict</a>
+            <a href="/knowmore" class="tablinks">Know more</a>
+            <a href="/analyse" class="tablinks">Analyse</a>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-half">
+                    <form id="predictionForm">
+                        <h3 class="title is-3">Crop Prediction Form</h3>
+                        <div class="field">
+                            <label class="label" for="age">N - ratio of Nitrogen content in soil</label>
+                            <div class="control">
+                                <input class="input" type="number" id="nitrogen" name="nitrogen" step="0.01">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="age">P - ratio of Phosphorous content in soil</label>
+                            <div class="control">
+                                <input class="input" type="number" id="phosphorous" name="phosphorous" step="0.01">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="age">K - ratio of Potassium content in soil</label>
+                            <div class="control">
+                                <input class="input" type="number" id="potassium" name="potassium" step="0.01">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="age">Temperature in degree Celsius                            </label>
+                            <div class="control">
+                                <input class="input" type="number" id="temperature" name="temperature" step="0.01">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="age">Humidity - relative humidity in %</label>
+                            <div class="control">
+                                <input class="input" type="number" id="humidity" name="humidity" step="0.01">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="rainfall">Rainfall (in mm)</label>
+                            <div class="control">
+                                <input class="input" type="number" id="rainfall" name="rainfall" step="0.01">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="ph">PH value of the soil</label>
+                            <div class="control">
+                                <input class="input" type="number" id="ph" name="ph" step="0.01">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="basic">Is the soil Basic in type</label>
+                            <div class="control">
+                                <div class="select">
+                                    <select id="basic" name="basic">
+                                        <option value="1">True</option>
+                                        <option value="0">False</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <button class="button is-link" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="column is-half" style="margin-top: 4rem;">
+                    <div class="card">
+                        <div class="image-card">
+                            <figure class="image is-4by3" style="width: inherit;">
+                                <img src="static/images/fill_form.png" alt="Crop Image" id="resultImage">
+                            </figure>
+                        </div>
+                        <div class="card-content pt-0">
+                            <div class="content mb-1" id="imageDescription" style="font-size: larger;">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-info-circle"></i>
+                                    </span>
+                                </span>
+                                Please fill in the details to know what is the best crop suitable for your soil
+                                conditions.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function loadInfo(infoLabels, infoValues, container, crop_name) {
+            // Create the card elements
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            const cardHeader = document.createElement('header');
+            cardHeader.classList.add('card-header');
+            const headerTitle = document.createElement('p');
+            headerTitle.classList.add('card-header-title');
+            headerTitle.classList.add('mb-0');
+            headerTitle.textContent = 'Crop Information: '+crop_name;
+            cardHeader.appendChild(headerTitle);
+
+            const cardContent = document.createElement('div');
+            cardContent.classList.add('card-content');
+            const content = document.createElement('div');
+            content.classList.add('content');
+
+            // Create a list to hold all the information
+            const list = document.createElement('ul');
+            list.classList.add('my-0');
+            infoLabels.forEach((label, index) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<strong>${label}:</strong> ${infoValues[index]}`;
+                list.appendChild(listItem);
+            });
+
+            content.appendChild(list);
+            cardContent.appendChild(content);
+            card.appendChild(cardHeader);
+            card.appendChild(cardContent);
+
+            // Append the entire card to the container
+            container.appendChild(card);
+        }
+
+        document.getElementById('predictionForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('/predict-crop', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    feature_names = ['{{feature_names[0]}}', '{{feature_names[1]}}', '{{feature_names[2]}}', '{{feature_names[3]}}', '{{feature_names[4]}}', '{{feature_names[5]}}',
+                        '{{feature_names[6]}}', '{{feature_names[7]}}']
+                    document.getElementById('resultImage').src = `static/${data.crop_image}`;
+                    const container = document.getElementById('imageDescription');
+                    container.textContent = `${data.crop} is the most suitable for the given conditions and below are more generalised info of this crop.`
+                    loadInfo(feature_names, data.info, container, data.crop)
+                    toggleVisibility()
+                })
+                .catch(error => console.error('Error:', error));
+        });
+        
+    </script>
+    
+</body>
+
+</html>

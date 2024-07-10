@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Crop Information</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            color: #333;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .navbar a {
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar a.logo {
+
+            display: block;
+            color: #f2f2f2;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 30px;
+            padding: 14px 16px;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .card {
+            margin-bottom: 2rem;
+            font-size: larger;
+        }
+        .container {
+            font-size: medium;
+        }
+        .tag {
+            background-color: lightsteelblue;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="/home" class="logo">Farm Crop Analysis</a>
+        <div class="nav-links">
+            <a href="/home" class="tablinks">Home</a>
+            <a href="/predict" class="tablinks">Predict</a>
+            <a href="/knowmore" class="tablinks">Know more</a>
+            <a href="/analyse" class="tablinks">Analyse</a>
+        </div>
+    </div>
+    <section class="section">
+
+        <div class="container">
+            <div class="card">
+                <header class="card-header p-0">
+                    <p class="card-header-title mb-0">
+                        Humidity > 80%
+                    </p>
+                </header>
+                <div class="card-content" id="phLevel">
+                    <div class="content" style="flex-wrap: wrap; display: flex;">
+                        {% for row in humidity_data %}
+                        <div class="tag is-primary m-1" style="font-size: large;">{{ row.crop }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="container">
+            <div class="card">
+                <header class="card-header p-0">
+                    <p class="card-header-title mb-0">
+                        Rainfall > 200mm
+                    </p>
+                </header>
+                <div class="card-content" id="phLevel">
+                    <div class="content" style="flex-wrap: wrap; display: flex;">
+                        {% for row in rainfall_data %}
+                        <div class="tag is-primary m-1 " style="font-size: large;">{{ row.crop }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="container">
+            <div class="card">
+                <header class="card-header p-0">
+                    <p class="card-header-title mb-0">
+                        PH value > 7.5
+                    </p>
+                </header>
+                <div class="card-content" id="phLevel">
+                    <div class="content" style="flex-wrap: wrap; display: flex;">
+                        {% for row in ph_data %}
+                        <div class="tag is-primary m-1" style="font-size: large;">{{ row.crop }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Soil Condition Analysis for Rice</h1>
+            <div class="box">
+                <canvas id="soilChart"></canvas>
+            </div>
+            
+            <h4>**High | medium | low  nitrogen/potassium/phosphorous : more than 80 | 50-80 | less than 50 </h4>
+            <h4>**High | medium | low  temperature : more than 20 | 12-20 | less than 12 </h4>
+            <h4>**High | medium | low  rainfall : more than 200 | 100-200 | less than 100 </h4>
+        </div>
+    </section>
+    <script>
+        const ctx = document.getElementById('soilChart').getContext('2d');
+        const soilChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Nitrogen", "Phosphorous", "Potassium", "Temperature", "Humidity", "Rainfall", "pH", "pH Type"],
+                datasets: [{
+                    label: 'Soil Condition',
+                    data: [3, 2, 3, 2, 3, 3, 1, 1], // Mapping: High=3, Moderate=2, Low=1
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)', // High
+                        'rgba(54, 162, 235, 0.6)', // Moderate
+                        'rgba(255, 206, 86, 0.6)', // High
+                        'rgba(75, 192, 192, 0.6)', // Moderate
+                        'rgba(153, 102, 255, 0.6)', // High
+                        'rgba(255, 159, 64, 0.6)',  // High
+                        'rgba(199, 199, 199, 0.6)', // Low
+                        'rgba(165, 105, 189, 0.6)'  // Low
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(165, 105, 189, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            // Create labels for the y-axis
+                            callback: function (value, index, values) {
+                                if (value === 3) return 'High';
+                                if (value === 2) return 'Moderate';
+                                if (value === 1) return 'Low';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
